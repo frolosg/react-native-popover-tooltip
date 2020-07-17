@@ -83,6 +83,7 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
     setBelow: PropTypes.bool,
     animationType: PropTypes.oneOf([ "timing", "spring" ]),
     onRequestClose: PropTypes.func,
+    onRequestOpen: PropTypes.func,
     triangleOffset: PropTypes.number,
     delayLongPress: PropTypes.number,
     onOpenTooltipMenu: PropTypes.func,
@@ -97,6 +98,7 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
     buttonComponentExpandRatio: 1.0,
     labelSeparatorColor: "#E1E1E1",
     onRequestClose: () => {},
+    onRequestOpen: () => {},
     setBelow: false,
     delayLongPress: 100,
     triangleOffset: 0,
@@ -262,29 +264,29 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
         : null;
     let triangleDown = null;
     let triangleUp = null;
-    if (this.state.tooltipTriangleDown) {
-      triangleDown = (
-        <View style={[
-          styles.triangleDown,
-          {
-            marginLeft: this.state.tooltipTriangleLeftMargin,
-            left: this.state.triangleOffset,
-          },
-          borderStyle,
-        ]} />
-      );
-    } else {
-      triangleUp = (
-        <View style={[
-          styles.triangleUp,
-          {
-            marginLeft: this.state.tooltipTriangleLeftMargin,
-            left: this.state.triangleOffset,
-          },
-          borderStyle,
-        ]} />
-      );
-    }
+    // if (this.state.tooltipTriangleDown) {
+    //   triangleDown = (
+    //     <View style={[
+    //       styles.triangleDown,
+    //       {
+    //         marginLeft: this.state.tooltipTriangleLeftMargin,
+    //         left: this.state.triangleOffset,
+    //       },
+    //       borderStyle,
+    //     ]} />
+    //   );
+    // } else {
+    //   triangleUp = (
+    //     <View style={[
+    //       styles.triangleUp,
+    //       {
+    //         marginLeft: this.state.tooltipTriangleLeftMargin,
+    //         left: this.state.triangleOffset,
+    //       },
+    //       borderStyle,
+    //     ]} />
+    //   );
+    // }
 
     return (
       <TouchableOpacity
@@ -431,10 +433,12 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
     ]).start(this.toggleModal);
   }
 
-  toggle = () => {
+  toggle = () => {    
     if (this.state.isModalOpen) {
+      this.props.onRequestClose() 
       this.hideModal();
     } else {
+      this.props.onRequestOpen() 
       this.openModal();
     }
   }
@@ -443,7 +447,7 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
 
 const styles = StyleSheet.create({
   overlay: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.7)',
     flex: 1,
   },
   innerContainer: {
@@ -497,3 +501,4 @@ const styles = StyleSheet.create({
 });
 
 export default PopoverTooltip;
+
