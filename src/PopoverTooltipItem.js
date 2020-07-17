@@ -48,7 +48,12 @@ class PopoverTooltipItem extends React.PureComponent<Props> {
     return (
       <View style={[styles.itemContainer, this.props.containerStyle]}>
         <TouchableOpacity onPress={this.onPress}>
-          {label}
+          <Text style={{fontFamily:'GTWalsheim-Light', fontSize:14}}>
+            {label}
+          </Text>
+          <Text style={{fontFamily:'GTWalsheim-Regular', fontSize:16, color:'#208BC7', alignSelf:'flex-end', marginTop:8}}>
+            Got it
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -67,3 +72,4 @@ const styles = StyleSheet.create({
 });
 
 export default PopoverTooltipItem;
+
