@@ -52,7 +52,7 @@ class PopoverTooltipItem extends React.PureComponent<Props> {
             {label}
           </Text>
           <Text style={{fontFamily:'GTWalsheim-Regular', fontSize:16, color:'#208BC7', alignSelf:'flex-end', marginTop:8}}>
-            Got it
+            Got it!
           </Text>
         </TouchableOpacity>
       </View>
