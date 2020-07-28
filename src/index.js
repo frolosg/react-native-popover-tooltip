@@ -15,6 +15,7 @@ import {
   Text,
   Easing,
   ViewPropTypes,
+  Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import invariant from 'invariant';
@@ -28,24 +29,24 @@ type Props = {
   buttonComponent: React.Node,
   buttonComponentExpandRatio: number,
   items: $ReadOnlyArray<{ +label: Label, onPress: () => void }>,
-  componentWrapperStyle?: StyleObj,
-  overlayStyle?: StyleObj,
-  tooltipContainerStyle?: StyleObj,
-  labelContainerStyle?: StyleObj,
-  labelSeparatorColor: string,
-  labelStyle?: StyleObj,
-  setBelow: bool,
-  animationType?: "timing" | "spring",
-  onRequestClose: () => void,
-  triangleOffset: number,
-  delayLongPress: number,
-  onOpenTooltipMenu?: () => void,
-  onCloseTooltipMenu?: () => void,
-  onPress?: () => void,
-  componentContainerStyle?: StyleObj,
-  timingConfig?: { duration?: number },
-  springConfig?: { tension?: number, friction?: number },
-  opacityChangeDuration?: number,
+    componentWrapperStyle ?: StyleObj,
+    overlayStyle ?: StyleObj,
+    tooltipContainerStyle ?: StyleObj,
+    labelContainerStyle ?: StyleObj,
+    labelSeparatorColor: string,
+      labelStyle ?: StyleObj,
+      setBelow: bool,
+        animationType ?: "timing" | "spring",
+        onRequestClose: () => void,
+          triangleOffset: number,
+            delayLongPress: number,
+              onOpenTooltipMenu ?: () => void,
+              onCloseTooltipMenu ?: () => void,
+              onPress ?: () => void,
+              componentContainerStyle ?: StyleObj,
+              timingConfig ?: { duration?: number },
+              springConfig ?: { tension?: number, friction?: number },
+              opacityChangeDuration ?: number,
 };
 type State = {
   isModalOpen: bool,
@@ -81,7 +82,7 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
     labelSeparatorColor: PropTypes.string,
     labelStyle: Text.propTypes.style,
     setBelow: PropTypes.bool,
-    animationType: PropTypes.oneOf([ "timing", "spring" ]),
+    animationType: PropTypes.oneOf(["timing", "spring"]),
     onRequestClose: PropTypes.func,
     onRequestOpen: PropTypes.func,
     triangleOffset: PropTypes.number,
@@ -97,8 +98,8 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
   static defaultProps = {
     buttonComponentExpandRatio: 1.0,
     labelSeparatorColor: "#E1E1E1",
-    onRequestClose: () => {},
-    onRequestOpen: () => {},
+    onRequestClose: () => { },
+    onRequestOpen: () => { },
     setBelow: false,
     delayLongPress: 100,
     triangleOffset: 0,
@@ -228,15 +229,19 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
 
   render() {
     const tooltipContainerStyle = {
-      left: this.state.tooltipContainerX,
-      top: this.state.tooltipContainerY,
+      left:  Platform.OS === 'ios' ? this.state.tooltipContainerX : undefined,
+      top:  Platform.OS === 'ios' ? this.state.tooltipContainerY : undefined,
       transform: [
-        { scale: this.state.tooltipContainerScale },
+        {
+          translateY: Platform.OS === 'android' ? this.state.tooltipContainerY : undefined,
+          translateX: Platform.OS === 'android' ? this.state.tooltipContainerX : undefined,
+          scale: this.state.tooltipContainerScale
+        },
       ],
     };
 
     const items = this.props.items.map((item, index) => {
-      const classes = [ this.props.labelContainerStyle ];
+      const classes = [this.props.labelContainerStyle];
 
       if (index !== this.props.items.length - 1) {
         classes.push([
@@ -344,16 +349,20 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
           </Animated.View>
           <Animated.View style={{
             position: 'absolute',
-            left: this.state.x,
-            top: this.state.y,
+            left: Platform.OS === 'ios' ? this.state.x : undefined,
+            top: Platform.OS === 'ios' ? this.state.y : undefined,
             width: this.state.width,
             height: this.state.height,
             backgroundColor: 'transparent',
             opacity: this.state.buttonComponentOpacity, // At the first frame, the button will be rendered
-                                                        // in the top-left corner. So we dont render it
-                                                        // until its position has been calculated.
+            // in the top-left corner. So we dont render it
+            // until its position has been calculated.
             transform: [
-              { scale: this.state.buttonComponentContainerScale },
+              {
+                translateY: Platform.OS === 'android' ? this.state.y : undefined,
+                translateX: Platform.OS === 'android' ? this.state.x: undefined,
+                scale: this.state.buttonComponentContainerScale
+              },
             ],
           }}>
             <TouchableOpacity
@@ -377,6 +386,7 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
       this.state.tooltipContainerScale,
       {
         toValue: 1,
+        useNativeDriver: Platform.OS === 'android' ?  true : undefined,
         duration: this.props.timingConfig && this.props.timingConfig.duration
           ? this.props.timingConfig.duration
           : 200,
@@ -387,6 +397,7 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
         this.state.tooltipContainerScale,
         {
           toValue: 1,
+          useNativeDriver: Platform.OS === 'android' ?  true : undefined,
           tension: this.props.springConfig && this.props.springConfig.tension
             ? this.props.springConfig.tension
             : 100,
@@ -402,6 +413,7 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
         this.state.opacity,
         {
           toValue: 1,
+          useNativeDriver: Platform.OS === 'android' ?  true : undefined,
           duration: this.props.opacityChangeDuration
             ? this.props.opacityChangeDuration
             : 200,
@@ -416,6 +428,7 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
         this.state.tooltipContainerScale,
         {
           toValue: 0,
+          useNativeDriver: Platform.OS === 'android' ?  true : undefined,
           duration: this.props.opacityChangeDuration
             ? this.props.opacityChangeDuration
             : 200,
@@ -425,6 +438,7 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
         this.state.opacity,
         {
           toValue: 0,
+          useNativeDriver: Platform.OS === 'android' ?  true : undefined,
           duration: this.props.opacityChangeDuration
             ? this.props.opacityChangeDuration
             : 200,
@@ -433,12 +447,12 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
     ]).start(this.toggleModal);
   }
 
-  toggle = () => {    
+  toggle = () => {
     if (this.state.isModalOpen) {
-      this.props.onRequestClose() 
+      this.props.onRequestClose()
       this.hideModal();
     } else {
-      this.props.onRequestOpen() 
+      this.props.onRequestOpen()
       this.openModal();
     }
   }
@@ -501,4 +515,5 @@ const styles = StyleSheet.create({
 });
 
 export default PopoverTooltip;
+
 
