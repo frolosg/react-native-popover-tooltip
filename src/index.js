@@ -128,6 +128,22 @@ class PopoverTooltip extends React.PureComponent<Props, State> {
     };
   }
 
+   throttle(func, delay) {
+    let last = 0;
+    return (...args) => {
+      const now = new Date().getTime()
+      if (now - last < delay) {
+        return
+      }
+      last = now
+      return func(...args)
+    }
+  }
+
+  componentDidMount() {
+    this.toggle = this.throttle(this.toggle, 3000)
+  }
+  
   componentWillMount() {
     const newOppositeOpacity = this.state.opacity.interpolate({
       inputRange: [0, 1],
